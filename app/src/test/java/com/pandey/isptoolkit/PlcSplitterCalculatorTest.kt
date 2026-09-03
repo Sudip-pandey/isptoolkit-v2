@@ -7,48 +7,36 @@ import org.junit.Test
 class PlcSplitterCalculatorTest {
 
     @Test
-    fun testIdealSplitterLosses() {
+    fun testSplitterCalculations() {
         val input = 8.0
 
-        // 1:2 split loss ≈ 3.01 dB -> ideal output ≈ 4.99 dBm
-        val res1to2 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatioStr = "1:2", insertionLossDb = 0.0, excessLossDb = 0.0, connectorLossDb = 0.0, spliceLossDb = 0.0)
-        assertEquals(4.9897, res1to2.idealOutputDbm, 0.01)
+        // 1:2 split -> theoretical 3.0, practical 3.3 -> output 4.7
+        val res1to2 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatio = 2)
+        assertEquals(3.0, res1to2.theoreticalLossDb, 0.01)
+        assertEquals(3.3, res1to2.practicalLossDb, 0.01)
+        assertEquals(4.7, res1to2.outputDbm, 0.01)
 
-        // 1:4 split loss ≈ 6.02 dB -> ideal output ≈ 1.98 dBm
-        val res1to4 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatioStr = "1:4", insertionLossDb = 0.0, excessLossDb = 0.0, connectorLossDb = 0.0, spliceLossDb = 0.0)
-        assertEquals(1.9794, res1to4.idealOutputDbm, 0.01)
+        // 1:4 split -> theoretical 6.0, practical 6.5 -> output 1.5
+        val res1to4 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatio = 4)
+        assertEquals(6.0, res1to4.theoreticalLossDb, 0.01)
+        assertEquals(6.5, res1to4.practicalLossDb, 0.01)
+        assertEquals(1.5, res1to4.outputDbm, 0.01)
 
-        // 1:8 split loss ≈ 9.03 dB -> ideal output ≈ -1.03 dBm
-        val res1to8 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatioStr = "1:8", insertionLossDb = 0.0, excessLossDb = 0.0, connectorLossDb = 0.0, spliceLossDb = 0.0)
-        assertEquals(-1.0308, res1to8.idealOutputDbm, 0.01)
-
-        // 1:16 -> ideal output ≈ -4.04 dBm
-        val res1to16 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatioStr = "1:16", insertionLossDb = 0.0, excessLossDb = 0.0, connectorLossDb = 0.0, spliceLossDb = 0.0)
-        assertEquals(-4.0412, res1to16.idealOutputDbm, 0.01)
-
-        // 1:32 -> ideal output ≈ -7.05 dBm
-        val res1to32 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatioStr = "1:32", insertionLossDb = 0.0, excessLossDb = 0.0, connectorLossDb = 0.0, spliceLossDb = 0.0)
-        assertEquals(-7.0515, res1to32.idealOutputDbm, 0.01)
-
-        // 1:64 -> ideal output ≈ -10.06 dBm
-        val res1to64 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatioStr = "1:64", insertionLossDb = 0.0, excessLossDb = 0.0, connectorLossDb = 0.0, spliceLossDb = 0.0)
-        assertEquals(-10.0618, res1to64.idealOutputDbm, 0.01)
+        // 1:8 split -> theoretical 9.0, practical 9.8 -> output -1.8
+        val res1to8 = PlcSplitterCalculator.calculate(inputDbm = input, splitRatio = 8)
+        assertEquals(9.0, res1to8.theoreticalLossDb, 0.01)
+        assertEquals(9.8, res1to8.practicalLossDb, 0.01)
+        assertEquals(-1.8, res1to8.outputDbm, 0.01)
     }
 
     @Test
-    fun testPracticalSplitterLosses() {
-        val input = 8.0
-        // 1:4 with 0.8 insertion, 0.2 excess, 0.5 connector, 0.1 splice -> total add. loss = 1.6 dB
-        // Estimated practical output = 1.98 - 1.6 = 0.38 dBm
-        val res = PlcSplitterCalculator.calculate(
-            inputDbm = input,
-            splitRatioStr = "1:4",
-            insertionLossDb = 0.8,
-            excessLossDb = 0.2,
-            connectorLossDb = 0.5,
-            spliceLossDb = 0.1
-        )
-        assertEquals(1.6, res.totalAdditionalLossDb, 0.001)
-        assertEquals(0.3794, res.estimatedPracticalOutputDbm, 0.01)
+    fun testAvailableRatios() {
+        val ratios = PlcSplitterCalculator.availableRatios()
+        assertTrue(ratios.contains(2))
+        assertTrue(ratios.contains(4))
+        assertTrue(ratios.contains(8))
+        assertTrue(ratios.contains(16))
+        assertTrue(ratios.contains(32))
+        assertTrue(ratios.contains(64))
     }
 }
