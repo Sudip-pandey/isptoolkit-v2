@@ -25,14 +25,14 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Unit Tests
-      run: ./gradlew test --no-daemon
+      run: ./gradlew :app:testDebugUnitTest --no-daemon
 
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --no-daemon
+      run: ./gradlew :app:assembleDebug --no-daemon
 
     - name: Upload Debug APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: isp-toolkit-debug-apk
-        path: '**/build/outputs/apk/**/*.apk'
+        path: app/build/outputs/apk/
         if-no-files-found: error
