@@ -41,11 +41,22 @@ cd "`dirname \"$PRG\"`/" >/dev/null
 APP_HOME="`pwd -P`"
 cd "$SAVED" >/dev/null
 
+warn () {
+    echo "$*"
+}
+
+die () {
+    echo
+    echo "$*"
+    echo
+    exit 1
+}
+
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+DEFAULT_JVM_OPTS="-Xmx64m -Xms64m"
 
 # Use the maximum available byte code version if JVM options are not set
 if [ -z "$JAVA_HOME" ] ; then
