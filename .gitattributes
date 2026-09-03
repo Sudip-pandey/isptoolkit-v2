@@ -1,0 +1,4 @@
+# Force gradlew script to use LF line endings for Linux runners
+gradlew text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
